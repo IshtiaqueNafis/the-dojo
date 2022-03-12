@@ -16,3 +16,4 @@ firebase.initializeApp(firebaseConfig);
 export const projectFireStore = firebase.firestore();
 export const projectAuth = firebase.auth();
 export const timeStamp = firebase.firestore.Timestamp;
+export const imageFormats = ["image/png", "image/svg", "image/jpeg"]
