@@ -46,7 +46,7 @@ const SignUp = () => {
                             fluid
                             size={'large'}
                             color={'purple'}
-                            content={'Login'}/>
+                            content={'Sign Up'}/>
 
                     </Form>
                 )}
