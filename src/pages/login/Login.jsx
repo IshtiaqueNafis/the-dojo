@@ -13,10 +13,10 @@ const Login = () => {
         password: ''
     }
 
-    const validationSchema = {
-        email: Yup.string().required(),
+    const validationSchema =Yup.object( {
+        email: Yup.string().email().required(),
         password: Yup.string().required()
-    }
+    })
 
     return (
         <div>
@@ -24,7 +24,7 @@ const Login = () => {
                 console.log({values});
             }}>
                 {({isSubmitting, dirty, isValid}) => (
-                    <Form>
+                    <Form className={'auth-form'}>
                         <Header sub color={'purple'} content={'sign in'}/>
                         <TextInput name={'email'} placeholder={'Enter Email'}/>
                         <TextInput name={'password'} placeholder={'Enter Password'} type={'password'}/>
