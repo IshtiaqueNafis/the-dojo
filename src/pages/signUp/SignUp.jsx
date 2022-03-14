@@ -3,12 +3,19 @@ import * as Yup from 'yup';
 import {Form, Formik} from 'formik';
 import "./SignUp.css"
 import TextInput from "../../Components/common/TextInput";
-import {Button, Header} from "semantic-ui-react";
+import {Button, Header, Label} from "semantic-ui-react";
 import {ImageInput} from "formik-file-and-image-input";
 import ImageUpload from "../../Components/common/ImageUpload";
 import {imageFormats} from "../../firebase/config";
+import {useDispatch, useSelector} from "react-redux";
+import {registerUserAsync} from "../../Redux/Reducers/AuthSliceReducer";
 
 const SignUp = () => {
+
+    //region *** dispatch and auth states***
+    const dispatch = useDispatch();
+    const {error, user} = useSelector(state => state.auth);
+    //endregion
 
     const initialValues = {
         email: '',
@@ -27,8 +34,18 @@ const SignUp = () => {
 
     return (
         <div>
-            <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={(values) => {
-                console.log({values});
+            <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={async (values, {
+                setSubmitting,
+                setErrors
+            }) => {
+
+
+                await dispatch(registerUserAsync({values}));
+                setSubmitting(false);
+
+
+
+
             }}>
                 {({isSubmitting, dirty, isValid}) => (
                     <Form className={'auth-form'}>
@@ -38,6 +55,9 @@ const SignUp = () => {
                         <TextInput name={'displayName'} placeholder={'Enter display Name'}/>
                         <br/>
                         <ImageInput name={'thumbnail'} Component={ImageUpload} validFormats={imageFormats}/>
+                        <br/>
+                        {error &&
+                        <Label basic color={'red'} style={{marginBottom: 10}} content={error}/>}
                         <br/>
                         <Button
                             loading={isSubmitting}
