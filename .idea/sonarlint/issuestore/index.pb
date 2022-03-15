@@ -13,16 +13,8 @@ L
 src/App.css,a\a\aa7165aefcf8ee3d73539e99ab007daf1aa18d8d
 Q
 !src/pages/dashboard/Dashboard.css,0\d\0d6e33ee012088f32cb9b79209da8e60c9669c0c
-M
-src/pages/project/Project.css,f\e\fe0f57ccb183e017494954e44db1ba7fcb103295
-Y
-)src/pages/createProject/CreateProject.css,8\2\8287a7430cf3a599b69ec1a4763f14b9f26fe52d
 R
 "src/Components/SideBar/SideBar.css,4\6\46f1c0fd20cc3f0c808f44e9cf84e2859c20697c
-Y
-)src/pages/createProject/CreateProject.jsx,8\2\825b691cd2a72a76d4b9c2b6b2d1eff2e8343ac2
-M
-src/pages/project/Project.jsx,e\a\ea979ea450ba8da7131d98a8b4e04f7f57fbbcd9
 S
 #src/Components/common/TextInput.jsx,8\3\830296bb2bfb05fd4e9bec256e41200ea708e85b
 =
@@ -31,18 +23,10 @@ K
 src/pages/signUp/SignUp.css,f\b\fbc8aac69b3036794d2624cbb6fd6564916e33b7
 P
  src/Components/Navbar/NavBar.css,7\d\7d06fe0c955e1883a7dd5811982a1a514d55c78b
-A
-package-lock.json,f\a\fa288d1472d29beccb489a676f68739ad365fc47
-<
-package.json,7\0\7030d0b2f71b999ff89a343de08c414af32fc93a
 F
 src/firebase/config.js,4\1\41f74ca4d9cc5dcea31632f528aa39fb8d167e97
 <
 src/index.js,f\9\f900edc44cb929c2267a16100a32851f6d5b477d
-K
-src/pages/signUp/SignUp.jsx,d\e\de4c7d23cf28f37388ac27fe9c94dbb4b03f9fa6
-I
-src/pages/login/Login.jsx,4\2\42e960a5dbe1524984d4463e37877fa2ad964727
 U
 %src/Components/common/ImageUpload.jsx,9\f\9f6ac76525207e3237dd006400a784ad5eb4b0d6
 P
