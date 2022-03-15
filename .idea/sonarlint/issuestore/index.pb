@@ -23,7 +23,5 @@ Y
 )src/pages/createProject/CreateProject.jsx,8\2\825b691cd2a72a76d4b9c2b6b2d1eff2e8343ac2
 M
 src/pages/project/Project.jsx,e\a\ea979ea450ba8da7131d98a8b4e04f7f57fbbcd9
-R
-"src/Components/SideBar/SideBar.jsx,d\e\dedacfaa98a207399e02e20aaf397669df995811
 S
 #src/Components/common/TextInput.jsx,8\3\830296bb2bfb05fd4e9bec256e41200ea708e85b

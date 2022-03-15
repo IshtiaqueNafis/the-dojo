@@ -1,5 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {projectAuth, projectFireStore, projectStorage, timeStamp} from "../../firebase/config";
+import {dataFromSnapshot} from "../../firebase/fireStore/fireStoreService";
 
 
 //region ***logInUserAsync({email,password})--->logs in user  ***
@@ -8,7 +9,7 @@ export const logInUserAsync = createAsyncThunk(
     async ({email, password}, thunkApi) => {
         try {
             const res = await projectAuth.signInWithEmailAndPassword(email, password);//res.email
-            return {email: res.user.email, id: res.user.uid}
+            thunkApi.dispatch(setUserDetailsAsync({id:res.user.uid}))
 
 
         } catch (e) {
@@ -65,17 +66,35 @@ export const registerUserAsync = createAsyncThunk(
     }
 );
 //endregion
+export const setUserDetailsAsync = createAsyncThunk(
+    'auth/UserDetail',
+    async ({id}, thunkApi) => {
+        try {
+            const res = await projectFireStore.collection('Users').doc(id).get().then(snapshot => dataFromSnapshot(snapshot));
+            if (res === undefined) {
+                return thunkApi.rejectWithValue('user not found')
+            }
+            return res;
+        } catch (e) {
+            return thunkApi.rejectWithValue(e.message);
+        }
+
+    }
+)
 
 export const AuthSlice = createSlice({
     name: "Auth/Register",
     initialState: {
         loading: null,
         user: null,
-        error: null
+        error: null,
+        isAuthReady: false
     },
     reducers: {
-        checkAuthIsReady: (state, {payload}) => {
+        checkUserStatus: (state, {payload}) => {
+
             state.user = {email: payload.email, uid: payload.uid};
+
         }
     },
     extraReducers: {
@@ -85,7 +104,7 @@ export const AuthSlice = createSlice({
             state.loading = true;
             state.error = null
         },
-        [registerUserAsync.fulfilled]: (state, {payload}) => {
+        [registerUserAsync.fulfilled]: (state) => {
             state.loading = false
             state.error = null
         },
@@ -101,9 +120,8 @@ export const AuthSlice = createSlice({
             state.loading = true;
             state.error = null
         },
-        [logInUserAsync.fulfilled]: (state, {payload}) => {
+        [logInUserAsync.fulfilled]: (state) => {
             state.loading = false
-            state.user = payload;
             state.error = null
         },
         [logInUserAsync.rejected]: (state, {payload}) => {
@@ -111,7 +129,6 @@ export const AuthSlice = createSlice({
             state.error = payload;
         },
         //endregion
-
 
 
         //region *** logsOutUser---> Register User ***
@@ -126,11 +143,24 @@ export const AuthSlice = createSlice({
         [logOutUserAsync.rejected]: (state, {payload}) => {
             state.loading = false
             state.error = payload;
-        }
+        },
         //endregion
+
+        [setUserDetailsAsync.pending]: (state) => {
+            state.loading = true;
+            state.error = null
+        },
+        [setUserDetailsAsync.fulfilled]: (state, {payload}) => {
+            state.loading = false
+            state.user = payload
+        },
+        [setUserDetailsAsync.rejected]: (state, {payload}) => {
+            state.loading = false
+            state.error = payload;
+        }
 
 
     }
 })
-export const {checkAuthIsReady} = AuthSlice.actions;
+export const {checkUserStatus} = AuthSlice.actions;
 export const AuthReducer = AuthSlice.reducer;

@@ -10,19 +10,25 @@ import SideBar from "./Components/SideBar/SideBar";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {projectAuth} from "./firebase/config";
-import {checkAuthIsReady} from "./Redux/Reducers/AuthSliceReducer";
+import {setUserDetailsAsync} from "./Redux/Reducers/AuthSliceReducer";
 
 const App = () => {
+
     const {user} = useSelector(state => state.auth);
     const dispatch = useDispatch()
-    useEffect(()=>{
-        const unSub = projectAuth.onAuthStateChanged(logged=>{
-            if(logged){
-                dispatch(checkAuthIsReady(logged))
+
+
+    useEffect(() => {
+
+        const unSub = projectAuth.onAuthStateChanged(logged => {
+            if (logged) {
+
+                dispatch(setUserDetailsAsync({id: logged.uid}));
             }
-            unSub();
-        })
-    },[dispatch])
+            unSub()
+        });
+
+    }, [dispatch])
 
 
     return (
@@ -30,7 +36,8 @@ const App = () => {
 
         <div className="App">
             <BrowserRouter>
-                <SideBar/>
+                {user && <SideBar/>
+                }
                 <div className="container">
                     <NavBar/>
                     <Switch>
