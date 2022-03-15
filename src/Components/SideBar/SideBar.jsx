@@ -16,7 +16,8 @@ const SideBar = () => {
         <div className="sidebar">
             <div className="sidebar-content">
                 <div className="user">
-                    {user &&    <Avatar src={user.profilePic} displayName={user.displayName}/>}
+                    {user &&    <Avatar src={user.profilePic} />}
+                    {user &&    <p>hey {user.displayName}</p>}
                     {/* avatar & username here later */}
 
                 </div>

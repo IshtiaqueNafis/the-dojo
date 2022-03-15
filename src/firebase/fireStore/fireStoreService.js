@@ -1,4 +1,4 @@
-import {timeStamp} from "../config";
+import {projectFireStore, timeStamp} from "../config";
 
 export function dataFromSnapshot(snapshot) {
     if (!snapshot.exists) return undefined;
@@ -17,3 +17,5 @@ export function dataFromSnapshot(snapshot) {
     }
 
 }
+
+export const listenToUsersFromFireStore = () => projectFireStore.collection('Users');

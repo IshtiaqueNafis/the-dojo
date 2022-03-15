@@ -11,6 +11,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {projectAuth} from "./firebase/config";
 import {setUserDetailsAsync} from "./Redux/Reducers/AuthSliceReducer";
+import OnlineUsers from "./Components/OnlineUsers/OnlineUsers";
+import LoadingComponent from "./Components/layout/LoadingComponent";
 
 const App = () => {
 
@@ -29,6 +31,8 @@ const App = () => {
         });
 
     }, [dispatch])
+
+
 
 
     return (
@@ -63,6 +67,7 @@ const App = () => {
                         </Route>
                     </Switch>
                 </div>
+                {user && <OnlineUsers/>}
             </BrowserRouter>
         </div>
     );

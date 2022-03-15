@@ -9,7 +9,7 @@ export const logInUserAsync = createAsyncThunk(
     async ({email, password}, thunkApi) => {
         try {
             const res = await projectAuth.signInWithEmailAndPassword(email, password);//res.email
-            thunkApi.dispatch(setUserDetailsAsync({id:res.user.uid}))
+            thunkApi.dispatch(setUserDetailsAsync({id: res.user.uid}))
 
 
         } catch (e) {
@@ -66,6 +66,7 @@ export const registerUserAsync = createAsyncThunk(
     }
 );
 //endregion
+//region *** setUserDetailsAsync(id) ** get users info in details
 export const setUserDetailsAsync = createAsyncThunk(
     'auth/UserDetail',
     async ({id}, thunkApi) => {
@@ -81,6 +82,18 @@ export const setUserDetailsAsync = createAsyncThunk(
 
     }
 )
+//endregion
+
+export const retrieveAllUsersAsync = createAsyncThunk(
+    'auth/allusers',
+    async ({users}, thunkApi) => {
+        try {
+            return users
+        } catch (e) {
+            return thunkApi.rejectWithValue(e.message);
+        }
+    }
+)
 
 export const AuthSlice = createSlice({
     name: "Auth/Register",
@@ -88,7 +101,7 @@ export const AuthSlice = createSlice({
         loading: null,
         user: null,
         error: null,
-        isAuthReady: false
+        users: [],
     },
     reducers: {
         checkUserStatus: (state, {payload}) => {
@@ -138,7 +151,8 @@ export const AuthSlice = createSlice({
         },
         [logOutUserAsync.fulfilled]: (state) => {
             state.loading = false
-            state.user = null
+            state.user = null;
+            state.error = null;
         },
         [logOutUserAsync.rejected]: (state, {payload}) => {
             state.loading = false
@@ -146,19 +160,36 @@ export const AuthSlice = createSlice({
         },
         //endregion
 
+        //region set setUserDetailsAsync
         [setUserDetailsAsync.pending]: (state) => {
             state.loading = true;
             state.error = null
         },
         [setUserDetailsAsync.fulfilled]: (state, {payload}) => {
-            state.loading = false
-            state.user = payload
+            state.loading = false;
+            state.user = payload;
+            state.error = null;
         },
         [setUserDetailsAsync.rejected]: (state, {payload}) => {
             state.loading = false
             state.error = payload;
+        },
+        //endregion
+        //region retrive all user Async
+        [retrieveAllUsersAsync.pending]: (state) => {
+            state.loading = true;
+            state.error = null
+        },
+        [retrieveAllUsersAsync.fulfilled]: (state, {payload}) => {
+            state.loading = false
+            state.users = [...payload]
+            state.error = null
+        },
+        [retrieveAllUsersAsync.rejected]: (state, {payload}) => {
+            state.loading = false
+            state.error = payload;
         }
-
+        //endregion
 
     }
 })

@@ -25,3 +25,25 @@ M
 src/pages/project/Project.jsx,e\a\ea979ea450ba8da7131d98a8b4e04f7f57fbbcd9
 S
 #src/Components/common/TextInput.jsx,8\3\830296bb2bfb05fd4e9bec256e41200ea708e85b
+=
+src/index.css,c\5\c5d38a62d1faae90a2acaa34b79a7ef365c917e4
+K
+src/pages/signUp/SignUp.css,f\b\fbc8aac69b3036794d2624cbb6fd6564916e33b7
+P
+ src/Components/Navbar/NavBar.css,7\d\7d06fe0c955e1883a7dd5811982a1a514d55c78b
+A
+package-lock.json,f\a\fa288d1472d29beccb489a676f68739ad365fc47
+<
+package.json,7\0\7030d0b2f71b999ff89a343de08c414af32fc93a
+F
+src/firebase/config.js,4\1\41f74ca4d9cc5dcea31632f528aa39fb8d167e97
+<
+src/index.js,f\9\f900edc44cb929c2267a16100a32851f6d5b477d
+K
+src/pages/signUp/SignUp.jsx,d\e\de4c7d23cf28f37388ac27fe9c94dbb4b03f9fa6
+I
+src/pages/login/Login.jsx,4\2\42e960a5dbe1524984d4463e37877fa2ad964727
+U
+%src/Components/common/ImageUpload.jsx,9\f\9f6ac76525207e3237dd006400a784ad5eb4b0d6
+P
+ src/Components/Avatar/Avatar.css,a\9\a9cba77be1f07c925073beb9a46019d7cb3445c4
