@@ -19,3 +19,4 @@ export function dataFromSnapshot(snapshot) {
 }
 
 export const listenToUsersFromFireStore = () => projectFireStore.collection('Users');
+export const listenToProjectsFromFireStore = () => projectFireStore.collection('Projects');
