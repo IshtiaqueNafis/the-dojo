@@ -84,6 +84,7 @@ export const updateProjectAsync = createAsyncThunk(
 
 
             const updatedData= await listenToProjectsFromFireStore().doc(id).update({[key]: value});
+            // [key] makes it dynamic1
 
 
         } catch (e) {
