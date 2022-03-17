@@ -1,5 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {projectFireStore, timeStamp} from "../../firebase/config";
+import {listenToProjectsFromFireStore} from "../../firebase/fireStore/fireStoreService";
 
 //region ****addProjectsAsync()--->create project ****
 export const addProjectsAsync = createAsyncThunk(
@@ -29,12 +30,11 @@ export const addProjectsAsync = createAsyncThunk(
                 comments: [],
                 createdAt: timeStamp.fromDate(new Date())
             })
-            thunkApi.dispatch(projectOperationFinish())
+
 
         } catch (e) {
             thunkApi.dispatch(projectOperationError(e.message));
         }
-
 
 
     }
@@ -43,17 +43,55 @@ export const addProjectsAsync = createAsyncThunk(
 
 export const getAllProjectsAsync = createAsyncThunk(
     "projects/allProjects",
-    async ({projects},thunkApi)=>{
+    async ({projects}, thunkApi) => {
         thunkApi.dispatch(projectOperationStart())
-
         try {
-            thunkApi.dispatch(projectOperationFinish());
+            if (projects === undefined) {
+                thunkApi.dispatch(projectOperationError('no data'));
+                return;
+            }
             return projects;
-        }catch (e) {
+        } catch (e) {
             thunkApi.dispatch(projectOperationError(e.message));
         }
     }
 )
+
+//region *** get single projects***
+export const getSingleProjectAsync = createAsyncThunk(
+    'project/singleProject',
+    async ({project}, thunkApi) => {
+        thunkApi.dispatch(projectOperationStart())
+        try {
+            if (project === undefined) {
+                thunkApi.dispatch(projectOperationError('unknown document'));
+            }
+            return project;
+        } catch (e) {
+            thunkApi.dispatch(projectOperationError(e.message));
+        }
+
+    }
+)
+//endregion
+
+export const updateProjectAsync = createAsyncThunk(
+    'project/update',
+    async ({id, key,value}, thunkApi) => {
+        thunkApi.dispatch(projectOperationStart());
+        try {
+
+
+
+            const updatedData= await listenToProjectsFromFireStore().doc(id).update({[key]: value});
+
+
+        } catch (e) {
+            return thunkApi.dispatch(projectOperationError(e.message));
+        }
+    }
+)
+
 
 export const ProjectSliceReducer = createSlice({
     name: 'Project',
@@ -68,10 +106,7 @@ export const ProjectSliceReducer = createSlice({
             state.loading = true;
             state.error = false;
         },
-        projectOperationFinish(state) {
-            state.loading = false
-            state.error = false;
-        },
+
         projectOperationError(state, {payload}) {
             state.loading = false;
             state.error = payload;
@@ -82,13 +117,23 @@ export const ProjectSliceReducer = createSlice({
             state.loading = false;
             state.error = null;
         },
-        [getAllProjectsAsync.fulfilled](state,{payload}){
+        [getAllProjectsAsync.fulfilled](state, {payload}) {
             state.loading = false;
             state.projects = [...payload];
             state.error = null
+        },
+        [getSingleProjectAsync.fulfilled](state, {payload}) {
+            state.loading = false
+            state.project = payload
+            state.error = null
+        },
+        [updateProjectAsync.fulfilled](state, {payload}) {
+            state.loading = false;
+            state.error = null;
         }
+
     }
 })
 
 export const projectReducer = ProjectSliceReducer.reducer;
-export const {projectOperationStart, projectOperationFinish, projectOperationError} = ProjectSliceReducer.actions;
+export const {projectOperationStart, projectOperationError} = ProjectSliceReducer.actions;

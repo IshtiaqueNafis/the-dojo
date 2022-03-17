@@ -3,17 +3,20 @@ import {projectAuth, projectFireStore, projectStorage, timeStamp} from "../../fi
 import {dataFromSnapshot} from "../../firebase/fireStore/fireStoreService";
 
 
+
 //region ***logInUserAsync({email,password})--->logs in user  ***
 export const logInUserAsync = createAsyncThunk(
     'Auth/login',
     async ({email, password}, thunkApi) => {
+        thunkApi.dispatch(authOperationStart())
         try {
             const res = await projectAuth.signInWithEmailAndPassword(email, password);//res.email
+
             thunkApi.dispatch(setUserDetailsAsync({id: res.user.uid}))
 
 
         } catch (e) {
-            return thunkApi.rejectWithValue('You entered wrong credentials')
+            thunkApi.dispatch(authOperationsError(e.message));
         }
     }
 )
@@ -23,13 +26,11 @@ export const logInUserAsync = createAsyncThunk(
 export const logOutUserAsync = createAsyncThunk(
     'Auth/Logout',
     async (_, thunkApi) => {
+        thunkApi.dispatch(authOperationStart());
         try {
-            const {user} = thunkApi.getState().auth;
-            console.log({user});
-
             await projectAuth.signOut();
         } catch (e) {
-            return thunkApi.rejectWithValue('something went wrong');
+            thunkApi.dispatch(authOperationsError(e.message));
         }
     }
 );
@@ -39,11 +40,15 @@ export const logOutUserAsync = createAsyncThunk(
 export const registerUserAsync = createAsyncThunk(
     'Auth/Register',
     async ({values}, thunkApi) => {
+
+
+        thunkApi.dispatch(authOperationStart())
         try {
             const {password, email, displayName, thumbnail} = values
             const res = await projectAuth.createUserWithEmailAndPassword(email, password)
             if (!res) {
-                return thunkApi.rejectWithValue('email is already taken');
+                thunkApi.dispatch(authOperationsError("email is already taken"));
+
             }
 
             const uploadPath = `Users/${res.user.uid}/${thumbnail.name}`
@@ -60,40 +65,49 @@ export const registerUserAsync = createAsyncThunk(
 
 
         } catch (e) {
-            return thunkApi.rejectWithValue(e.message);
-        }
+            thunkApi.dispatch(authOperationsError(e.message));
 
+        }
     }
 );
 //endregion
+
 //region *** setUserDetailsAsync(id) ** get users info in details
 export const setUserDetailsAsync = createAsyncThunk(
     'auth/UserDetail',
     async ({id}, thunkApi) => {
+        thunkApi.dispatch(authOperationStart())
         try {
             const res = await projectFireStore.collection('Users').doc(id).get().then(snapshot => dataFromSnapshot(snapshot));
             if (res === undefined) {
-                return thunkApi.rejectWithValue('user not found')
+                thunkApi.rejectWithValue('user not found')
             }
             return res;
         } catch (e) {
-            return thunkApi.rejectWithValue(e.message);
+            thunkApi.dispatch(authOperationsError(e.message));
         }
 
     }
 )
 //endregion
 
+//region *** retrieveAllUsersAsync ***
 export const retrieveAllUsersAsync = createAsyncThunk(
     'auth/allusers',
     async ({users}, thunkApi) => {
+        thunkApi.dispatch(authOperationStart())
         try {
+            if (users === undefined) {
+                thunkApi.dispatch(authOperationsError('nothing found'));
+                return;
+            }
             return users
         } catch (e) {
-            return thunkApi.rejectWithValue(e.message);
+            thunkApi.dispatch(authOperationsError(e.message));
         }
     }
 )
+//endregion
 
 export const AuthSlice = createSlice({
     name: "Auth/Register",
@@ -104,94 +118,68 @@ export const AuthSlice = createSlice({
         users: [],
     },
     reducers: {
-        checkUserStatus: (state, {payload}) => {
 
-            state.user = {email: payload.email, uid: payload.uid};
-
+        authOperationStart(state) {
+            state.loading = true;
+            state.error = null
+        },
+        authOperationsError(state, {payload}) {
+            state.loading = false
+            state.error = {payload}
         }
+
+
     },
     extraReducers: {
 
         //region *** registerUserAsync ---> Register User ***
-        [registerUserAsync]: (state) => {
-            state.loading = true;
-            state.error = null
-        },
+
         [registerUserAsync.fulfilled]: (state) => {
             state.loading = false
             state.error = null
         },
-        [registerUserAsync.rejected]: (state, {payload}) => {
-            state.loading = false
-            state.error = payload;
-        },
+
         //endregion
 
-
         //region ***logInUserAsync ---> logsInuser ***
-        [logInUserAsync.pending]: (state) => {
-            state.loading = true;
-            state.error = null
-        },
+
         [logInUserAsync.fulfilled]: (state) => {
             state.loading = false
             state.error = null
         },
-        [logInUserAsync.rejected]: (state, {payload}) => {
-            state.loading = false
-            state.error = payload;
-        },
-        //endregion
 
+        //endregion
 
         //region *** logsOutUser---> Register User ***
-        [logOutUserAsync.pending]: (state) => {
-            state.loading = true;
-            state.error = null
-        },
+
         [logOutUserAsync.fulfilled]: (state) => {
             state.loading = false
-            state.user = null;
             state.error = null;
         },
-        [logOutUserAsync.rejected]: (state, {payload}) => {
-            state.loading = false
-            state.error = payload;
-        },
+
         //endregion
 
-        //region set setUserDetailsAsync
-        [setUserDetailsAsync.pending]: (state) => {
-            state.loading = true;
-            state.error = null
-        },
+        //region ***set setUserDetailsAsync ****
+
         [setUserDetailsAsync.fulfilled]: (state, {payload}) => {
             state.loading = false;
             state.user = payload;
             state.error = null;
         },
-        [setUserDetailsAsync.rejected]: (state, {payload}) => {
-            state.loading = false
-            state.error = payload;
-        },
+
         //endregion
-        //region retrive all user Async
-        [retrieveAllUsersAsync.pending]: (state) => {
-            state.loading = true;
-            state.error = null
-        },
+
+        //region ***retrive all user Async***
+
         [retrieveAllUsersAsync.fulfilled]: (state, {payload}) => {
             state.loading = false
             state.users = [...payload]
             state.error = null
         },
-        [retrieveAllUsersAsync.rejected]: (state, {payload}) => {
-            state.loading = false
-            state.error = payload;
-        }
+
         //endregion
 
     }
 })
-export const {checkUserStatus} = AuthSlice.actions;
+export const {checkUserStatus, authOperationStart, authOperationsError} = AuthSlice.actions;
 export const AuthReducer = AuthSlice.reducer;

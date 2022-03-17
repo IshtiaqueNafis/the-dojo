@@ -23,8 +23,7 @@ const CreateProject = () => {
         {value: "marketing", text: "Marketing", key: 'marketing'},
     ]
     const dispatch = useDispatch();
-    const {users} = useSelector(state => state.auth)
-    const {loading} = useSelector(state => state.async)
+    const {users,loading} = useSelector(state => state.auth)
     useFireStoreCollection({
         query: () => listenToUsersFromFireStore(),
         data: OnlineUsers => dispatch(retrieveAllUsersAsync({users: OnlineUsers})),

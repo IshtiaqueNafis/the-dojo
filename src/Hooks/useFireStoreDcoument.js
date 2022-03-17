@@ -1,19 +1,22 @@
 import {useDispatch} from "react-redux";
 import {useEffect} from "react";
-import {asyncActionError, asyncActionFinish, asyncActionStart} from "../Redux/Reducers/asyncSliceReducer";
 import {dataFromSnapshot} from "../firebase/fireStore/fireStoreService";
 
 
-export default function useFireStoreDocument({query, data, deps}) {
+export default function useFireStoreDocument({query, data, deps, errorFunc}) {
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(asyncActionStart());
+
         const unSubScribe = query().onSnapshot(
             snapShot => {
+                if (!snapShot.exists) {
+                    dispatch(errorFunc({code: 'not-found', message: 'could not find doucment'}));
+                    return;
+                }
                 data(dataFromSnapshot(snapShot));
-                dispatch(asyncActionFinish());
+
             },
-            error => dispatch(asyncActionError(error))
+            error => dispatch(errorFunc(error))
         );
         return () => {
             unSubScribe();

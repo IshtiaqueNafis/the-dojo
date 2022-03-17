@@ -14,10 +14,13 @@ import {setUserDetailsAsync} from "./Redux/Reducers/AuthSliceReducer";
 import OnlineUsers from "./Components/OnlineUsers/OnlineUsers";
 import LoadingComponent from "./Components/layout/LoadingComponent";
 
+
 const App = () => {
 
     const {user} = useSelector(state => state.auth);
     const dispatch = useDispatch()
+
+
 
 
     useEffect(() => {
@@ -34,11 +37,11 @@ const App = () => {
 
 
 
-
     return (
 
 
         <div className="App">
+
             <BrowserRouter>
                 {user && <SideBar/>
                 }
@@ -54,7 +57,6 @@ const App = () => {
                             {user && <CreateProject/>}
                         </Route>
                         <Route path={'/projects/:id'}>
-                            {!user && <Redirect to={"/login"}/>}
                             {user && <Project/>}
                         </Route>
                         <Route path={'/login'}>

@@ -14,7 +14,7 @@ const SignUp = () => {
 
     //region *** dispatch and auth states***
     const dispatch = useDispatch();
-    const {error, user} = useSelector(state => state.auth);
+    const {error} = useSelector(state => state.auth);
     //endregion
 
     const initialValues = {
